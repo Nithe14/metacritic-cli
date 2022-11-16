@@ -1,11 +1,14 @@
 //use clap;
+use std::collections::HashMap;
 
 fn main() {
+    let mut hashMap: HashMap<String, String> = HashMap::new();
     let mut scores_vec: Vec<String> = vec![String::new(); 10];
     let mut titles_vec: Vec<String> = vec![String::new(); 10];
+    let mut platforms_vec: Vec<String> = vec![String::new(); 10];
 
     let response =
-        reqwest::blocking::get("https://www.metacritic.com/search/all/bayonetta/results")
+        reqwest::blocking::get("https://www.metacritic.com/search/all/witcher%203/results")
             .unwrap()
             .text()
             .unwrap();
@@ -14,6 +17,7 @@ fn main() {
     let items_selector = scraper::Selector::parse("ul.search_results.module>li.result").unwrap();
     let items = document.select(&items_selector).map(|x| x.inner_html());
     let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
+    let platform_selector = scraper::Selector::parse("div.main_stats>p>span.platform").unwrap();
 
     items.zip(1..11).for_each(|(item, number)| {
         //let score_selector = scraper:Selector::parse("div.main_stats>span.metascore_w").unwrap();
@@ -23,6 +27,11 @@ fn main() {
             .zip(1..11)
             .for_each(|(ite, num)| scores_vec[number - 1] = ite.trim().to_owned());
         //println!("{}. {}", numer, ite.trim()));
+
+        let platforms = it.select(&platform_selector).map(|x| x.inner_html());
+        platforms
+            .zip(0..10)
+            .for_each(|(ite, num)| platforms_vec[number - 1] = ite.trim().to_owned());
     });
 
     let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
@@ -36,8 +45,11 @@ fn main() {
             .replace("</span>", "");
     });
 
-    for i in 1..11 {
-        println!("Title: {}", titles_vec[i - 1]);
-        println!("Score: {}", scores_vec[i - 1]);
+    for i in 0..10 {
+        hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
+        println!(
+            "Title: {}\n Score: {}\n Platform: {}\n\n",
+            titles_vec[i], scores_vec[i], platforms_vec[i]
+        )
     }
 }
