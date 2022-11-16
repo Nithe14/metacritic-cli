@@ -1,8 +1,12 @@
 //use clap;
+mod args;
 use std::collections::HashMap;
 
+use args::Args;
+use clap::Parser;
+
 fn main() {
-    let mut hashMap: HashMap<String, String> = HashMap::new();
+    //let mut hashMap: HashMap<String, String> = HashMap::new();
     let mut scores_vec: Vec<String> = vec![String::new(); 10];
     let mut titles_vec: Vec<String> = vec![String::new(); 10];
     let mut platforms_vec: Vec<String> = vec![String::new(); 10];
@@ -32,24 +36,25 @@ fn main() {
         platforms
             .zip(0..10)
             .for_each(|(ite, num)| platforms_vec[number - 1] = ite.trim().to_owned());
+
+        let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
+        //let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
+        let titles = document.select(&title_selector).map(|x| x.inner_html());
+
+        titles.zip(1..11).for_each(|(item, number)| {
+            titles_vec[number - 1] = item
+                .trim()
+                .replace("<span class=\"title_prefix\">", "")
+                .replace("</span>", "");
+        });
     });
 
-    let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
-    //let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
-    let titles = document.select(&title_selector).map(|x| x.inner_html());
-
-    titles.zip(1..11).for_each(|(item, number)| {
-        titles_vec[number - 1] = item
-            .trim()
-            .replace("<span class=\"title_prefix\">", "")
-            .replace("</span>", "");
-    });
-
-    for i in 0..10 {
-        hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
-        println!(
-            "Title: {}\n Score: {}\n Platform: {}\n\n",
-            titles_vec[i], scores_vec[i], platforms_vec[i]
-        )
-    }
+    let args = Args::parse();
+    //for i in 0..10 {
+    ////hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
+    //println!(
+    //"Title: {}\n Score: {}\n Platform: {}\n\n",
+    //titles_vec[i], scores_vec[i], platforms_vec[i]
+    //)
+    //}
 }
