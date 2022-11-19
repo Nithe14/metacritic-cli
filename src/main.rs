@@ -13,7 +13,8 @@ fn main() {
     let mut platforms_vec: Vec<String> = vec![String::new(); 10];
 
     let response = reqwest::blocking::get(format!(
-        "https://www.metacritic.com/search/all/{}/results",
+        "https://www.metacritic.com/search/{}/{}/results",
+        args.itype,
         encode(&args.name)
     ))
     .unwrap()
