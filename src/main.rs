@@ -57,7 +57,7 @@ fn main() {
             titles_vec[0], scores_vec[0], platforms_vec[0]
         )
     } else {
-        for i in 0..10 {
+        for i in 0..args.number_of_results {
             //hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
             println!(
                 "Title: {}\nScore: {}\nPlatform: {}\n\n",
