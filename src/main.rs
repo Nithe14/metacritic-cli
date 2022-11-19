@@ -3,6 +3,7 @@ mod args;
 
 use args::Args;
 use clap::Parser;
+use urlencoding::encode;
 
 fn main() {
     let args = Args::parse();
@@ -13,7 +14,7 @@ fn main() {
 
     let response = reqwest::blocking::get(format!(
         "https://www.metacritic.com/search/all/{}/results",
-        args.name
+        encode(&args.name)
     ))
     .unwrap()
     .text()
