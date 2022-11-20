@@ -61,10 +61,14 @@ fn main() {
     } else {
         for i in 0..args.number_of_results {
             //hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
-            println!(
-                "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                titles_vec[i], scores_vec[i], platforms_vec[i]
-            )
+            if titles_vec[i] == "" {
+                break;
+            } else {
+                println!(
+                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                    titles_vec[i], scores_vec[i], platforms_vec[i]
+                )
+            }
         }
     }
 }
