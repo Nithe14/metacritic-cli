@@ -3,6 +3,7 @@ mod args;
 
 use args::Args;
 use clap::Parser;
+use colored::Colorize;
 use urlencoding::encode;
 
 fn main() {
@@ -90,10 +91,30 @@ fn main() {
             if titles_vec[i] == "" {
                 break;
             } else {
-                println!(
-                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                    titles_vec[i], scores_vec[i], platforms_vec[i]
-                )
+                if scores_vec[i].parse::<i32>().unwrap() > 74 {
+                    println!(
+                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                        format!("{}", titles_vec[i]).bold(),
+                        format!("{}", scores_vec[i]).green(),
+                        platforms_vec[i]
+                    )
+                } else if scores_vec[i].parse::<i32>().unwrap() > 49
+                    && scores_vec[i].parse::<i32>().unwrap() < 75
+                {
+                    println!(
+                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                        format!("{}", titles_vec[i]).bold(),
+                        format!("{}", scores_vec[i]).yellow(),
+                        platforms_vec[i]
+                    )
+                } else {
+                    println!(
+                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                        format!("{}", titles_vec[i]).bold(),
+                        format!("{}", scores_vec[i]).red(),
+                        platforms_vec[i]
+                    )
+                }
             }
         }
     }
