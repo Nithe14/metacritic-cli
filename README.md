@@ -35,7 +35,7 @@ Wait till isntallation complete. Now you can use my program `metacritic-cli`.
 How to use:
 
 ```bash
-metacritic-cli -h 
+$ metacritic-cli -h 
 
 Usage: metacritic-cli [OPTIONS] <NAME>
 
