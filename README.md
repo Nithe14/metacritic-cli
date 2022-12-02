@@ -22,7 +22,7 @@ A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in
 
 # Quick start
 
-Just run thi commands in your terminal:
+Just run this commands in your terminal:
 
 ```bash
 git clone https://github.com/Nithe14/metacritic-cli.git
