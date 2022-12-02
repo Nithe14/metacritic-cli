@@ -30,8 +30,48 @@ cd metacritic-cli
 cargo install --path .
 ```
 
-Wait till isntallation complete. Now you can use my program `metacritic-cli`. Run this command to learn how to use it:
+Wait till isntallation complete. Now you can use my program `metacritic-cli`. 
+
+How to use:
 
 ```bash
 metacritic-cli -h 
+
+Usage: metacritic-cli [OPTIONS] <NAME>
+
+Arguments:
+  <NAME>
+          Word to search.
+
+          Example: metacritic-cli witcher\ 3
+
+Options:
+  -s, --single
+          Print only the first object from the result page.
+          Works as -n 1.
+
+  -n, --number-of-results <NUMBER_OF_RESULTS>
+          Print only n firsts objects from the result page (n = 1-10)
+
+          [default: 3]
+
+  -t, --type <ITYPE>
+          Specify object type.
+          Aviable types:
+          movie, game, album, tv, person, video, company, story, all
+
+          [default: all]
+
+  -p, --platform <PLATFORM>
+          Specify platform (only for game type for now).
+          Aviable options:
+          ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
+
+          [default: all]
+
+  -h, --help
+          Print help information (use `-h` for a summary)
+
+  -V, --version
+          Print version information
 ```
