@@ -6,25 +6,33 @@ const ALL: &str = "all";
 #[command(author, version, about, long_about = None)]
 pub struct Args {
     /// Word to search.
+    ///
+    ///Example:
+    /// metacritic-cli witcher\ 3
     pub name: String,
 
-    /// Print only the first object from the result page. Works as -n 1.
-    #[arg(short, long)]
+    /// Print only the first object from the result page.
+    /// Works as -n 1.
+    ///
+    #[arg(short, long, verbatim_doc_comment)]
     pub single: bool,
 
     /// Print only n firsts objects from the result page (n = 1-10).
     #[arg(short, long, value_parser = n_in_range, default_value_t = 3)]
     pub number_of_results: usize,
 
-    /// Specify object type (movie,
-    /// game, album, tv, person, video, company, story, all)
-    #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = ALL.to_owned())]
+    /// Specify object type.
+    /// Aviable types:
+    /// movie, game, album, tv, person, video, company, story, all
+    ///
+    #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
     pub itype: String,
 
-    /// Specify platform (only for game type for now)
-    /// Aviable options: ps, ps2, ps3, ps4, xbox, xbox-360 xbox-one, switch, pc, ds, 3ds, ps-vita,
-    /// psp, wii, wii-u, gameboy-advance, iphone
-    #[arg(short, long, default_value_t = ALL.to_owned())]
+    /// Specify platform (only for game type for now).
+    /// Aviable options:
+    /// ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
+    ///
+    #[arg(short, long, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
     pub platform: String,
 }
 
