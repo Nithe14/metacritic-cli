@@ -57,14 +57,14 @@ Options:
 
   -t, --type <ITYPE>
           Specify object type.
-          Aviable types:
+          Available types:
           movie, game, album, tv, person, video, company, story, all
 
           [default: all]
 
   -p, --platform <PLATFORM>
           Specify platform (only for game type for now).
-          Aviable options:
+          Available options:
           ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
 
           [default: all]

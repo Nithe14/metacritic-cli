@@ -22,14 +22,14 @@ pub struct Args {
     pub number_of_results: usize,
 
     /// Specify object type.
-    /// Aviable types:
+    /// Available types:
     /// movie, game, album, tv, person, video, company, story, all
     ///
     #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
     pub itype: String,
 
     /// Specify platform (only for game type for now).
-    /// Aviable options:
+    /// Available options:
     /// ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
     ///
     #[arg(short, long, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
