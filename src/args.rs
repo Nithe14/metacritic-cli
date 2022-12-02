@@ -16,10 +16,16 @@ pub struct Args {
     #[arg(short, long, value_parser = n_in_range, default_value_t = 3)]
     pub number_of_results: usize,
 
-    /// Specify item type (movie,
+    /// Specify object type (movie,
     /// game, album, tv, person, video, company, story, all)
     #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = ALL.to_owned())]
     pub itype: String,
+
+    /// Specify platform (only for game type for now)
+    /// Aviable options: ps, ps2, ps3, ps4, xbox, xbox-360 xbox-one, switch, pc, ds, 3ds, ps-vita,
+    /// psp, wii, wii-u, gameboy-advance, iphone
+    #[arg(short, long, default_value_t = ALL.to_owned())]
+    pub platform: String,
 }
 
 const N_RANGE: RangeInclusive<usize> = 1..=10;

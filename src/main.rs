@@ -11,11 +11,37 @@ fn main() {
     let mut scores_vec: Vec<String> = vec![String::new(); 10];
     let mut titles_vec: Vec<String> = vec![String::new(); 10];
     let mut platforms_vec: Vec<String> = vec![String::new(); 10];
+    let search_args;
+
+    match args.platform.as_str() {
+        "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
+        "ps3" => search_args = String::from("?search_type=advanced&plats[1]=1"),
+        "xbox-one" => search_args = String::from("?search_type=advanced&plats[80000]=1"),
+        "switch" => search_args = String::from("?plats[268409]=1&search_type=advanced"),
+        "xbox-360" => search_args = String::from("?search_type=advanced&plats[2]=1"),
+        "pc" => search_args = String::from("?search_type=advanced&plats[3]=1"),
+        "ds" => search_args = String::from("?search_type=advanced&plats[4]=1"),
+        "3ds" => search_args = String::from("?search_type=advanced&plats[16]=1"),
+        "ps-vita" => search_args = String::from("?search_type=advanced&plats[67365]=1"),
+        "psp" => search_args = String::from("?search_type=advanced&plats[7]=1"),
+        "wii" => search_args = String::from("?search_type=advanced&plats[8]=1"),
+        "wii-u" => search_args = String::from("?search_type=advanced&plats[68410]=1"),
+        "ps2" => search_args = String::from("?search_type=advanced&plats[6]=1"),
+        "ps" => search_args = String::from("?search_type=advanced&plats[10]=1"),
+        "gameboy-advance" => search_args = String::from("?search_type=advanced&plats[11]=1"),
+        "iphone" => search_args = String::from("?search_type=advanced&plats[9]=1"),
+        "xbox" => search_args = String::from("?search_type=advanced&plats[12]=1"),
+        "gamecube" => search_args = String::from("?search_type=advanced&plats[13]=1"),
+        "nintendo64" => search_args = String::from("?search_type=advanced&platls[14]=1"),
+        "dreamcast" => search_args = String::from("?search_type=advanced&plats[15]=1"),
+        _ => search_args = String::from(""),
+    }
 
     let response = reqwest::blocking::get(format!(
-        "https://www.metacritic.com/search/{}/{}/results",
+        "https://www.metacritic.com/search/{}/{}/results{}",
         args.itype,
-        encode(&args.name)
+        encode(&args.name),
+        search_args
     ))
     .unwrap()
     .text()
