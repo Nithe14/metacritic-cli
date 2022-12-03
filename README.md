@@ -51,7 +51,7 @@ Options:
           Works as -n 1.
 
   -n, --number-of-results <NUMBER_OF_RESULTS>
-          Print only n firsts objects from the result page (n = 1-10)
+          Print only n first objects from the result page (n = 1-10)
 
           [default: 3]
 
