@@ -87,11 +87,17 @@ fn main() {
         )
     } else {
         for i in 0..args.number_of_results {
-            //hashMap.insert(titles_vec[i].clone(), scores_vec[i].clone());
             if titles_vec[i] == "" {
                 break;
             } else {
-                if scores_vec[i].parse::<i32>().unwrap() > 74 {
+                if scores_vec[i] == "tbd" || scores_vec[i] == "" {
+                    println!(
+                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                        format!("{}", titles_vec[i]).bold(),
+                        format!("{}", scores_vec[i]),
+                        platforms_vec[i]
+                    )
+                } else if scores_vec[i].parse::<i32>().unwrap() > 74 {
                     println!(
                         "Title: {}\nScore: {}\nPlatform: {}\n\n",
                         format!("{}", titles_vec[i]).bold(),
