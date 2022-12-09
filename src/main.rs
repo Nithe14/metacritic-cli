@@ -55,13 +55,11 @@ fn main() {
     let platform_selector = scraper::Selector::parse("div.main_stats>p>span.platform").unwrap();
 
     items.zip(1..11).for_each(|(item, number)| {
-        //let score_selector = scraper:Selector::parse("div.main_stats>span.metascore_w").unwrap();
         let it = scraper::Html::parse_document(&item);
         let scores = it.select(&score_selector).map(|x| x.inner_html());
         scores
             .zip(1..11)
             .for_each(|(ite, _num)| scores_vec[number - 1] = ite.trim().to_owned());
-        //println!("{}. {}", numer, ite.trim()));
 
         let platforms = it.select(&platform_selector).map(|x| x.inner_html());
         platforms
@@ -69,7 +67,6 @@ fn main() {
             .for_each(|(ite, _num)| platforms_vec[number - 1] = ite.trim().to_owned());
 
         let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
-        //let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
         let titles = document.select(&title_selector).map(|x| x.inner_html());
 
         titles.zip(1..11).for_each(|(item, number)| {
