@@ -78,18 +78,11 @@ fn main() {
         });
     });
 
-    let data = json!({
-        "title": titles_vec[0],
-        "score": scores_vec[0],
-        "platform": platforms_vec[0]
-    });
-
-    if args.single {
+    if (args.single || args.number_of_results == 1) && !args.json {
         println!(
             "Title: {}\nScore: {}\nPlatform: {}\n\n",
             titles_vec[0], scores_vec[0], platforms_vec[0]
         );
-        println!("{}", data.to_string());
     } else {
         for i in 0..args.number_of_results {
             let mut hashmap = Map::new();
