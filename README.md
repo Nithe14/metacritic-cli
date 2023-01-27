@@ -2,11 +2,15 @@
 
 A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in Rust. Unfortunately metacritic has no API, so this is the only way to make a CLI app to search scores of games, movies etc.
 
+Version 1.0.0 new features:
+
+- json ouput (-j)
+
 ## Prerequisities
 
-- rustc 1.65.0
+- rustc 1.67.0
 
-- cargo 1.65.0
+- cargo 1.67.0
 
 ## Dependencies
 
@@ -17,6 +21,8 @@ A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in
 - reqwest = {version = "0.11", features = ["blocking"]}
 
 - scraper = "0.12.0"
+
+- serde_json = "1.0.89"
 
 - urlencoding = "2.1.2"    
 
@@ -49,6 +55,8 @@ Options:
   -s, --single
           Print only the first object from the result page.
           Works as -n 1.
+ -j, --json
+          Print output as json
 
   -n, --number-of-results <NUMBER_OF_RESULTS>
           Print only n first objects from the result page (n = 1-10)
