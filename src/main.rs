@@ -9,6 +9,7 @@ use urlencoding::encode;
 
 fn main() {
     let args = Args::parse();
+    let mut_number_of_results: usize;
     let mut scores_vec: Vec<String> = vec![String::new(); 10];
     let mut titles_vec: Vec<String> = vec![String::new(); 10];
     let mut platforms_vec: Vec<String> = vec![String::new(); 10];
@@ -78,58 +79,56 @@ fn main() {
         });
     });
 
-    if (args.single || args.number_of_results == 1) && !args.json {
-        println!(
-            "Title: {}\nScore: {}\nPlatform: {}\n\n",
-            titles_vec[0], scores_vec[0], platforms_vec[0]
-        );
+    if args.single {
+        mut_number_of_results = 1;
     } else {
-        for i in 0..args.number_of_results {
-            let mut hashmap = Map::new();
+        mut_number_of_results = args.number_of_results;
+    }
+    for i in 0..mut_number_of_results {
+        let mut hashmap = Map::new();
 
-            if titles_vec[i] == "" {
-                break;
+        if titles_vec[i] == "" {
+            break;
+        } else {
+            if args.json {
+                hashmap.insert("title".to_string(), json!(titles_vec[i]));
+                hashmap.insert("score".to_string(), json!(scores_vec[i]));
+                hashmap.insert("platform".to_string(), json!(platforms_vec[i]));
+                json_vec.push(hashmap);
+            } else if scores_vec[i] == "tbd" || scores_vec[i] == "" {
+                println!(
+                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                    format!("{}", titles_vec[i]).bold(),
+                    format!("{}", scores_vec[i]),
+                    platforms_vec[i]
+                )
+            } else if scores_vec[i].parse::<i32>().unwrap() > 74 {
+                println!(
+                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                    format!("{}", titles_vec[i]).bold(),
+                    format!("{}", scores_vec[i]).green(),
+                    platforms_vec[i]
+                )
+            } else if scores_vec[i].parse::<i32>().unwrap() > 49
+                && scores_vec[i].parse::<i32>().unwrap() < 75
+            {
+                println!(
+                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                    format!("{}", titles_vec[i]).bold(),
+                    format!("{}", scores_vec[i]).yellow(),
+                    platforms_vec[i]
+                )
             } else {
-                if args.json {
-                    hashmap.insert("title".to_string(), json!(titles_vec[i]));
-                    hashmap.insert("score".to_string(), json!(scores_vec[i]));
-                    hashmap.insert("platform".to_string(), json!(platforms_vec[i]));
-                    json_vec.push(hashmap);
-                } else if scores_vec[i] == "tbd" || scores_vec[i] == "" {
-                    println!(
-                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                        format!("{}", titles_vec[i]).bold(),
-                        format!("{}", scores_vec[i]),
-                        platforms_vec[i]
-                    )
-                } else if scores_vec[i].parse::<i32>().unwrap() > 74 {
-                    println!(
-                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                        format!("{}", titles_vec[i]).bold(),
-                        format!("{}", scores_vec[i]).green(),
-                        platforms_vec[i]
-                    )
-                } else if scores_vec[i].parse::<i32>().unwrap() > 49
-                    && scores_vec[i].parse::<i32>().unwrap() < 75
-                {
-                    println!(
-                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                        format!("{}", titles_vec[i]).bold(),
-                        format!("{}", scores_vec[i]).yellow(),
-                        platforms_vec[i]
-                    )
-                } else {
-                    println!(
-                        "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                        format!("{}", titles_vec[i]).bold(),
-                        format!("{}", scores_vec[i]).red(),
-                        platforms_vec[i]
-                    )
-                }
+                println!(
+                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                    format!("{}", titles_vec[i]).bold(),
+                    format!("{}", scores_vec[i]).red(),
+                    platforms_vec[i]
+                )
             }
         }
-        if args.json {
-            println!("{}", to_string(&json_vec).unwrap());
-        }
+    }
+    if args.json {
+        println!("{}", to_string(&json_vec).unwrap());
     }
 }
