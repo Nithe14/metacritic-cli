@@ -4,16 +4,16 @@ mod args;
 use args::Args;
 use clap::Parser;
 use colored::Colorize;
-//use std::collections::HashMap;
+use serde_json::{json, to_string, Map};
 use urlencoding::encode;
 
 fn main() {
     let args = Args::parse();
-    //let mut hash_map: HashMap<String, Vec<String>> = HashMap::new();          => in the future
     let mut scores_vec: Vec<String> = vec![String::new(); 10];
     let mut titles_vec: Vec<String> = vec![String::new(); 10];
     let mut platforms_vec: Vec<String> = vec![String::new(); 10];
     let search_args;
+    let mut json_vec = Vec::new();
 
     match args.platform.as_str() {
         "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
@@ -78,21 +78,31 @@ fn main() {
         });
     });
 
+    let data = json!({
+        "title": titles_vec[0],
+        "score": scores_vec[0],
+        "platform": platforms_vec[0]
+    });
+
     if args.single {
         println!(
             "Title: {}\nScore: {}\nPlatform: {}\n\n",
             titles_vec[0], scores_vec[0], platforms_vec[0]
-        )
+        );
+        println!("{}", data.to_string());
     } else {
         for i in 0..args.number_of_results {
+            let mut hashmap = Map::new();
+
             if titles_vec[i] == "" {
                 break;
             } else {
-                //hash_map.insert(
-                //titles_vec[i].to_owned(),
-                //vec![scores_vec[i].to_owned(), platforms_vec[i].to_owned()],
-                //);
-                if scores_vec[i] == "tbd" || scores_vec[i] == "" {
+                if args.json {
+                    hashmap.insert("title".to_string(), json!(titles_vec[i]));
+                    hashmap.insert("score".to_string(), json!(scores_vec[i]));
+                    hashmap.insert("platform".to_string(), json!(platforms_vec[i]));
+                    json_vec.push(hashmap);
+                } else if scores_vec[i] == "tbd" || scores_vec[i] == "" {
                     println!(
                         "Title: {}\nScore: {}\nPlatform: {}\n\n",
                         format!("{}", titles_vec[i]).bold(),
@@ -124,6 +134,9 @@ fn main() {
                     )
                 }
             }
+        }
+        if args.json {
+            println!("{}", to_string(&json_vec).unwrap());
         }
     }
 }

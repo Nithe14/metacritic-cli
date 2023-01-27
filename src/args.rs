@@ -17,6 +17,11 @@ pub struct Args {
     #[arg(short, long, verbatim_doc_comment)]
     pub single: bool,
 
+    /// Print output as json
+    ///
+    #[arg(short, long, verbatim_doc_comment)]
+    pub json: bool,
+
     /// Print only n first objects from the result page (n = 1-10).
     #[arg(short, long, value_parser = n_in_range, default_value_t = 3)]
     pub number_of_results: usize,
