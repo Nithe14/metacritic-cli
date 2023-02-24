@@ -4,6 +4,7 @@ mod args;
 use args::Args;
 use clap::Parser;
 use colored::Colorize;
+use reqwest::blocking::{RequestBuilder, Response};
 use serde_json::{json, to_string, Map};
 use urlencoding::encode;
 
@@ -40,15 +41,7 @@ fn main() {
         _ => search_args = String::from(""),
     }
 
-    let response = reqwest::blocking::get(format!(
-        "https://www.metacritic.com/search/{}/{}/results{}",
-        args.itype,
-        encode(&args.name),
-        search_args
-    ))
-    .unwrap()
-    .text()
-    .unwrap();
+    let response = make_request(args.name, args.itype, search_args).unwrap();
 
     let document = scraper::Html::parse_document(&response);
     let items_selector = scraper::Selector::parse("ul.search_results.module>li.result").unwrap();
@@ -131,4 +124,23 @@ fn main() {
     if args.json {
         println!("{}", to_string(&json_vec).unwrap());
     }
+}
+
+fn make_request(
+    args_name: String,
+    args_itype: String,
+    search_args: String,
+) -> Result<String, Box<dyn std::error::Error>> {
+    let url = format!(
+        "https://www.metacritic.com/search/{}/{}/results{}",
+        args_itype,
+        encode(&args_name),
+        search_args
+    );
+    let client = reqwest::blocking::Client::new();
+    let mut request_builder: RequestBuilder = client.get(&url);
+    request_builder = request_builder.header("User-Agent", "MetacriticCLI");
+    let response: Response = request_builder.send()?;
+    let response_text = response.text()?;
+    Ok(response_text)
 }
