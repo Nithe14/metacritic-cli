@@ -2,6 +2,10 @@
 
 A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in Rust. Unfortunately metacritic has no API, so this is the only way to make a CLI app to search scores of games, movies etc.
 
+Version 1.0.2:
+
+- main request has now User-Agent header, cause its required by Metacritic
+
 Version 1.0.0 new features:
 
 - json ouput (-j)
