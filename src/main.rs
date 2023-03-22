@@ -4,8 +4,12 @@ use args::Args;
 use clap::Parser;
 use colored::Colorize;
 use reqwest::blocking::{RequestBuilder, Response};
+use serde::{Deserialize, Serialize};
 use serde_json::{json, to_string, Map};
 use urlencoding::encode;
+
+#[macro_use]
+extern crate serde_derive;
 
 enum TSP {
     TITLE,
@@ -13,7 +17,7 @@ enum TSP {
     PLATFORM,
 }
 
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
 struct MetacriticResult {
     title: String,
     score: String,
@@ -44,13 +48,9 @@ impl MetacriticResult {
 fn main() {
     let args = Args::parse();
     let mut_number_of_results: usize;
-    let mut scores_vec: Vec<String> = vec![String::new(); 10];
-    let mut titles_vec: Vec<String> = vec![String::new(); 10];
-    let mut platforms_vec: Vec<String> = vec![String::new(); 10];
     let search_args;
-    let mut json_vec = Vec::new();
 
-    let mut mr: Vec<MetacriticResult> = vec![MetacriticResult::new(None, None, None)];
+    let mut final_results: Vec<MetacriticResult> = Vec::new();
 
     match args.platform.as_str() {
         "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
@@ -79,85 +79,19 @@ fn main() {
     let response = make_request(args.name, args.itype, search_args).unwrap();
 
     let document = scraper::Html::parse_document(&response);
-    let items_selector = scraper::Selector::parse("ul.search_results.module>li.result").unwrap();
-    let items = document.select(&items_selector).map(|x| x.inner_html());
-    let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
-    let platform_selector = scraper::Selector::parse("div.main_stats>p>span.platform").unwrap();
-
-    items.zip(0..10).for_each(|(item, number)| {
-        let it = scraper::Html::parse_document(&item);
-        let scores = it.select(&score_selector).map(|x| x.inner_html());
-        scores
-            .zip(0..10)
-            .for_each(|(ite, _num)| scores_vec[number] = ite.trim().to_owned());
-
-        let platforms = it.select(&platform_selector).map(|x| x.inner_html());
-        platforms
-            .zip(0..10)
-            .for_each(|(ite, _num)| platforms_vec[number] = ite.trim().to_owned());
-
-        let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
-        let titles = document.select(&title_selector).map(|x| x.inner_html());
-
-        titles.zip(0..10).for_each(|(item, number)| {
-            titles_vec[number] = item
-                .trim()
-                .replace("<span class=\"title_prefix\">", "")
-                .replace("</span>", "");
-        });
-    });
 
     if args.single {
         mut_number_of_results = 1;
     } else {
         mut_number_of_results = args.number_of_results;
     }
-    for i in 0..mut_number_of_results {
-        let mut hashmap = Map::new();
 
-        if titles_vec[i] == "" {
-            break;
-        } else {
-            if args.json {
-                hashmap.insert("title".to_string(), json!(titles_vec[i]));
-                hashmap.insert("score".to_string(), json!(scores_vec[i]));
-                hashmap.insert("platform".to_string(), json!(platforms_vec[i]));
-                json_vec.push(hashmap);
-            } else if scores_vec[i] == "tbd" || scores_vec[i] == "" {
-                println!(
-                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                    format!("{}", titles_vec[i]).bold(),
-                    format!("{}", scores_vec[i]),
-                    platforms_vec[i]
-                )
-            } else if scores_vec[i].parse::<i32>().unwrap() > 74 {
-                println!(
-                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                    format!("{}", titles_vec[i]).bold(),
-                    format!("{}", scores_vec[i]).green(),
-                    platforms_vec[i]
-                )
-            } else if scores_vec[i].parse::<i32>().unwrap() > 49
-                && scores_vec[i].parse::<i32>().unwrap() < 75
-            {
-                println!(
-                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                    format!("{}", titles_vec[i]).bold(),
-                    format!("{}", scores_vec[i]).yellow(),
-                    platforms_vec[i]
-                )
-            } else {
-                println!(
-                    "Title: {}\nScore: {}\nPlatform: {}\n\n",
-                    format!("{}", titles_vec[i]).bold(),
-                    format!("{}", scores_vec[i]).red(),
-                    platforms_vec[i]
-                )
-            }
-        }
-    }
+    final_results = scrap(&document, mut_number_of_results);
+
     if args.json {
-        println!("{}", to_string(&json_vec).unwrap());
+        println!("{}", to_string(&final_results).unwrap());
+    } else {
+        print_pretty(final_results);
     }
 }
 
@@ -180,30 +114,34 @@ fn make_request(
     Ok(response_text)
 }
 
-fn scrap(document: &scraper::Html, number_of_results: usize) {
+fn scrap(document: &scraper::Html, number_of_results: usize) -> Vec<MetacriticResult> {
     let items_selector = scraper::Selector::parse("ul.search_results.module>li.result").unwrap();
     let items = document.select(&items_selector).map(|x| x.inner_html());
 
+    let mut results: Vec<MetacriticResult> = Vec::new();
+
     items.zip(0..number_of_results).for_each(|(item, number)| {
+        results.push(MetacriticResult::new(None, None, None));
+
         let current_item = scraper::Html::parse_document(&item);
 
         let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
         let titles = document.select(&title_selector).map(|x| x.inner_html());
         titles.zip(0..1).for_each(|(ite, _num)| {
-            println!(
-                "{}",
+            results[number].put_data(
                 ite.trim()
                     .to_owned()
                     .replace("<span class=\"title_preifx\">", "")
-                    .replace("</span>", "")
-            )
+                    .replace("</span>", ""),
+                TSP::TITLE,
+            );
         });
 
         let score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
         let scores = current_item.select(&score_selector).map(|x| x.inner_html());
         scores
             .zip(0..)
-            .for_each(|(ite, _num)| println!("{}", ite.trim().to_owned()));
+            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::SCORE));
 
         let platform_selector = scraper::Selector::parse("div.main_stats>p>span.platform").unwrap();
         let platforms = current_item
@@ -211,6 +149,47 @@ fn scrap(document: &scraper::Html, number_of_results: usize) {
             .map(|x| x.inner_html());
         platforms
             .zip(0..)
-            .for_each(|(ite, _num)| println!("{}", ite.trim().to_owned()));
+            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::PLATFORM));
     });
+
+    results
+}
+
+fn print_pretty(final_results: Vec<MetacriticResult>) {
+    for result in final_results {
+        if result.title == "" {
+            break;
+        }
+        if result.score == "tbd" || result.score == "" {
+            println!(
+                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                format!("{}", result.title).bold(),
+                format!("{}", result.score),
+                result.platform
+            )
+        } else if result.score.parse::<i32>().unwrap() > 74 {
+            println!(
+                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                format!("{}", result.title).bold(),
+                format!("{}", result.score).green(),
+                result.platform
+            )
+        } else if result.score.parse::<i32>().unwrap() > 49
+            && result.score.parse::<i32>().unwrap() < 75
+        {
+            println!(
+                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                format!("{}", result.title).bold(),
+                format!("{}", result.score).yellow(),
+                result.platform
+            )
+        } else {
+            println!(
+                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                format!("{}", result.title).bold(),
+                format!("{}", result.score).red(),
+                result.platform
+            )
+        }
+    }
 }
