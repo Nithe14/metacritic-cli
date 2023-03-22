@@ -1,56 +1,21 @@
 mod args;
+mod metacriticresults;
 
 use args::Args;
 use clap::Parser;
 use colored::Colorize;
+use metacriticresults::{MetacriticResult, TSP};
 use reqwest::blocking::{RequestBuilder, Response};
-use serde::{Deserialize, Serialize};
-use serde_json::{json, to_string, Map};
+use serde_json::to_string;
 use urlencoding::encode;
 
 #[macro_use]
 extern crate serde_derive;
 
-enum TSP {
-    TITLE,
-    SCORE,
-    PLATFORM,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct MetacriticResult {
-    title: String,
-    score: String,
-    platform: String,
-}
-impl MetacriticResult {
-    fn new(
-        ititle: Option<String>,
-        iscore: Option<String>,
-        iplatform: Option<String>,
-    ) -> MetacriticResult {
-        MetacriticResult {
-            title: ititle.unwrap_or(String::from("")),
-            score: iscore.unwrap_or(String::from("")),
-            platform: iplatform.unwrap_or(String::from("")),
-        }
-    }
-
-    fn put_data(&mut self, input_data: String, dtype: TSP) {
-        match dtype {
-            TSP::TITLE => self.title = input_data,
-            TSP::SCORE => self.score = input_data,
-            TSP::PLATFORM => self.platform = input_data,
-        }
-    }
-}
-
 fn main() {
     let args = Args::parse();
     let mut_number_of_results: usize;
     let search_args;
-
-    let mut final_results: Vec<MetacriticResult> = Vec::new();
 
     match args.platform.as_str() {
         "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
@@ -78,15 +43,14 @@ fn main() {
 
     let response = make_request(args.name, args.itype, search_args).unwrap();
 
-    let document = scraper::Html::parse_document(&response);
-
     if args.single {
         mut_number_of_results = 1;
     } else {
         mut_number_of_results = args.number_of_results;
     }
 
-    final_results = scrap(&document, mut_number_of_results);
+    let document = scraper::Html::parse_document(&response);
+    let final_results = scrap(&document, mut_number_of_results); //scraping HTML data
 
     if args.json {
         println!("{}", to_string(&final_results).unwrap());
