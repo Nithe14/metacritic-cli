@@ -2,19 +2,11 @@
 
 A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in Rust. Unfortunately metacritic has no API, so this is the only way to make a CLI app to search scores of games, movies etc.
 
-Version 1.0.2:
-
-- main request has now User-Agent header, cause its required by Metacritic
-
-Version 1.0.0 new features:
-
-- json ouput (-j)
-
 ## Prerequisities
 
-- rustc 1.67.0
+- rustc 1.68.0
 
-- cargo 1.67.0
+- cargo 1.68.0
 
 ## Dependencies
 
@@ -25,6 +17,8 @@ Version 1.0.0 new features:
 - reqwest = {version = "0.11", features = ["blocking"]}
 
 - scraper = "0.12.0"
+- serde = "1.0.158"
+- serde_derive = "1.0.158"
 
 - serde_json = "1.0.89"
 
@@ -32,16 +26,22 @@ Version 1.0.0 new features:
 
 # Quick start
 
-Just run this commands in your terminal:
+For testing purposes:
+```bash
+git clone https://github.com/Nithe14/metacritic-cli.git
+cd metacritic-cli
+cargo run -- -h
+```
+Install it as a binary:
 
 ```bash
 git clone https://github.com/Nithe14/metacritic-cli.git
 cd metacritic-cli
 cargo install --path .
+# Add cargo path to your path (in .bashrc etc)
+export PATH=~/.cargo/bin:$PATH
+metacritic-cli -h
 ```
-
-Wait till isntallation complete. Now you can use my program `metacritic-cli`. 
-
 How to use:
 
 ```bash
