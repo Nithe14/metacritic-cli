@@ -17,6 +17,9 @@ fn main() {
     let mut_number_of_results: usize;
     let search_args;
 
+    screp_comming_soon();
+    std::process::exit(0);
+
     match args.platform.as_str() {
         "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
         "ps3" => search_args = String::from("?search_type=advanced&plats[1]=1"),
@@ -156,4 +159,49 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
             )
         }
     }
+}
+
+fn screp_comming_soon() {
+    let response = make_req().unwrap();
+
+    let document = scraper::Html::parse_document(&response);
+    let items_selector =
+        scraper::Selector::parse("table.clamp-list>tbody>tr>td.clamp-summary-wrap").unwrap();
+    let items = document.select(&items_selector).map(|x| x.inner_html());
+    items.zip(0..).for_each(|(item, number)| {
+        let current_item = scraper::Html::parse_document(&item);
+
+        let title_selector = scraper::Selector::parse("a.title>h3").unwrap();
+        let titles = current_item.select(&title_selector).map(|x| x.inner_html());
+        titles.zip(0..1).for_each(|(ite, _num)| {
+            println!("{}", ite);
+        });
+
+        let score_selector =
+            scraper::Selector::parse("div.clamp-score-wrap>a.metascore_anchor>div.metascore_w")
+                .unwrap();
+        let scores = current_item.select(&score_selector).map(|x| x.inner_html());
+        scores.zip(0..).for_each(|(ite, _num)| println!("{}", ite));
+
+        let platform_selector =
+            scraper::Selector::parse("div.clamp-details>div.platform>span.data").unwrap();
+        let platforms = current_item
+            .select(&platform_selector)
+            .map(|x| x.inner_html());
+        platforms
+            .zip(0..)
+            .for_each(|(ite, _num)| println!("{}", ite.trim()));
+    });
+
+    //println!("{:?}", items);
+}
+
+fn make_req() -> Result<String, Box<dyn std::error::Error>> {
+    let url = format!("https://www.metacritic.com/browse/games/release-date/coming-soon/all/date");
+    let client = reqwest::blocking::Client::new();
+    let mut request_builder: RequestBuilder = client.get(&url);
+    request_builder = request_builder.header("User-Agent", "MetacriticCLI");
+    let response: Response = request_builder.send()?;
+    let response_text = response.text()?;
+    Ok(response_text)
 }
