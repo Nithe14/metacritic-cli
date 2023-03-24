@@ -17,7 +17,8 @@ fn main() {
     let mut_number_of_results: usize;
     let search_args;
 
-    screp_comming_soon();
+    let fs = screp_comming_soon();
+    print_pretty(fs);
     std::process::exit(0);
 
     match args.platform.as_str() {
@@ -161,27 +162,33 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
     }
 }
 
-fn screp_comming_soon() {
+fn screp_comming_soon() -> Vec<MetacriticResult> {
     let response = make_req().unwrap();
+
+    let mut results: Vec<MetacriticResult> = Vec::new();
 
     let document = scraper::Html::parse_document(&response);
     let items_selector =
         scraper::Selector::parse("table.clamp-list>tbody>tr>td.clamp-summary-wrap").unwrap();
     let items = document.select(&items_selector).map(|x| x.inner_html());
     items.zip(0..).for_each(|(item, number)| {
+        results.push(MetacriticResult::new(None, None, None));
+
         let current_item = scraper::Html::parse_document(&item);
 
         let title_selector = scraper::Selector::parse("a.title>h3").unwrap();
         let titles = current_item.select(&title_selector).map(|x| x.inner_html());
         titles.zip(0..1).for_each(|(ite, _num)| {
-            println!("{}", ite);
+            results[number].put_data(ite.trim().to_owned(), TSP::TITLE);
         });
 
         let score_selector =
             scraper::Selector::parse("div.clamp-score-wrap>a.metascore_anchor>div.metascore_w")
                 .unwrap();
         let scores = current_item.select(&score_selector).map(|x| x.inner_html());
-        scores.zip(0..).for_each(|(ite, _num)| println!("{}", ite));
+        scores
+            .zip(0..)
+            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::SCORE));
 
         let platform_selector =
             scraper::Selector::parse("div.clamp-details>div.platform>span.data").unwrap();
@@ -190,10 +197,10 @@ fn screp_comming_soon() {
             .map(|x| x.inner_html());
         platforms
             .zip(0..)
-            .for_each(|(ite, _num)| println!("{}", ite.trim()));
+            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::PLATFORM));
     });
 
-    //println!("{:?}", items);
+    results
 }
 
 fn make_req() -> Result<String, Box<dyn std::error::Error>> {
