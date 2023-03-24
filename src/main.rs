@@ -90,8 +90,8 @@ fn scrap(document: &scraper::Html, number_of_results: usize) -> Vec<MetacriticRe
         let current_item = scraper::Html::parse_document(&item);
 
         let title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
-        let titles = document.select(&title_selector).map(|x| x.inner_html());
-        titles.zip(0..1).for_each(|(ite, _num)| {
+        let titles = current_item.select(&title_selector).map(|x| x.inner_html());
+        titles.zip(0..).for_each(|(ite, _num)| {
             results[number].put_data(
                 ite.trim()
                     .to_owned()
