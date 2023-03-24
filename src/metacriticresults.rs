@@ -12,14 +12,14 @@ pub struct MetacriticResult {
 }
 impl MetacriticResult {
     pub fn new(
-        ititle: Option<String>,
-        iscore: Option<String>,
-        iplatform: Option<String>,
+        title: Option<String>,
+        score: Option<String>,
+        platform: Option<String>,
     ) -> MetacriticResult {
         MetacriticResult {
-            title: ititle.unwrap_or(String::from("")),
-            score: iscore.unwrap_or(String::from("")),
-            platform: iplatform.unwrap_or(String::from("")),
+            title: title.unwrap_or(String::from("")),
+            score: score.unwrap_or(String::from("")),
+            platform: platform.unwrap_or(String::from("")),
         }
     }
 
