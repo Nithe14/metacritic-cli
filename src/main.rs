@@ -40,8 +40,8 @@ fn set_url(name: &String, platform: &String, itype: &String) -> String {
     let url: String;
     if name == &String::from("coming-soon") {
         url = format!(
-            "https://www.metacritic.com/browse/games/release-date/coming-soon/{}/date",
-            platform,
+            "https://www.metacritic.com/browse/{}s/release-date/coming-soon/{}/date",
+            itype, platform,
         );
     } else {
         let search_args;

@@ -2,6 +2,7 @@ use clap::Parser;
 use std::ops::RangeInclusive;
 
 const ALL: &str = "all";
+const GAME: &str = "game";
 #[derive(Parser, Debug)]
 #[command(author, version, about, long_about = None)]
 pub struct Args {
@@ -32,7 +33,7 @@ pub struct Args {
     /// Available types:
     /// movie, game, album, tv, person, video, company, story, all
     ///
-    #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
+    #[arg(short = 't', long = "type", value_parser = type_parser, default_value_t = GAME.to_owned(), verbatim_doc_comment)]
     pub itype: String,
 
     /// Specify platform (only for game type for now).
