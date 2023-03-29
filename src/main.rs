@@ -129,7 +129,7 @@ fn scrap(
             results[number].put_data(
                 ite.trim()
                     .to_owned()
-                    .replace("<span class=\"title_preifx\">", "")
+                    .replace("<span class=\"title_prefix\">", "")
                     .replace("</span>", ""),
                 TSPD::TITLE,
             );

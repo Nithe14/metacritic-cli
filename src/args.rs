@@ -6,7 +6,7 @@ const ALL: &str = "all";
 #[command(author, version, about, long_about = None)]
 pub struct Args {
     /// Word to search.
-    /// You can provide "coming-soon" to get coming soon game releases.
+    /// You can provide "coming-soon" to get upcoming game releases.
     /// Examples:
     /// `metacritic-cli "witcher 3"`
     /// `metacritic-cli coming-soon -p ps5`
