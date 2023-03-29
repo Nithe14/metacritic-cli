@@ -6,9 +6,11 @@ const ALL: &str = "all";
 #[command(author, version, about, long_about = None)]
 pub struct Args {
     /// Word to search.
-    ///
-    ///Example:
-    /// metacritic-cli witcher\ 3
+    /// You can provide "coming-soon" to get coming soon game releases.
+    /// Examples:
+    /// `metacritic-cli "witcher 3"`
+    /// `metacritic-cli coming-soon -p ps5`
+    #[arg(verbatim_doc_comment)]
     pub name: String,
 
     /// Print only the first object from the result page.
@@ -34,8 +36,8 @@ pub struct Args {
     pub itype: String,
 
     /// Specify platform (only for game type for now).
-    /// Available options:
-    /// ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
+    /// Available options (ps5 and xbox-series-x is only available for "coming-soon" for now - it's because of metacritic not me, sorry):
+    /// ps, ps2, ps3, ps4, ps5, xbox, xbox360, xboxone, xbox-series-x, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
     ///
     #[arg(short, long, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
     pub platform: String,
