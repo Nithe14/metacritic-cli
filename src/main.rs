@@ -19,14 +19,13 @@ fn main() {
     let url = set_url(&args.name, &args.platform, &args.itype);
 
     let response = make_request(url).unwrap();
+    let document = scraper::Html::parse_document(&response);
 
     if args.single {
         mut_number_of_results = 1;
     } else {
         mut_number_of_results = args.number_of_results;
     }
-
-    let document = scraper::Html::parse_document(&response);
 
     let final_results = scrap(&document, mut_number_of_results, args.name); //scraping HTML data
 
@@ -49,9 +48,9 @@ fn set_url(name: &String, platform: &String, itype: &String) -> String {
         match platform.as_str() {
             "ps4" => search_args = String::from("?plats[72496]=1&search_type=advanced"),
             "ps3" => search_args = String::from("?search_type=advanced&plats[1]=1"),
-            "xbox-one" => search_args = String::from("?search_type=advanced&plats[80000]=1"),
+            "xboxone" => search_args = String::from("?search_type=advanced&plats[80000]=1"),
             "switch" => search_args = String::from("?plats[268409]=1&search_type=advanced"),
-            "xbox-360" => search_args = String::from("?search_type=advanced&plats[2]=1"),
+            "xbox360" => search_args = String::from("?search_type=advanced&plats[2]=1"),
             "pc" => search_args = String::from("?search_type=advanced&plats[3]=1"),
             "ds" => search_args = String::from("?search_type=advanced&plats[4]=1"),
             "3ds" => search_args = String::from("?search_type=advanced&plats[16]=1"),

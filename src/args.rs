@@ -35,7 +35,7 @@ pub struct Args {
 
     /// Specify platform (only for game type for now).
     /// Available options:
-    /// ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
+    /// ps, ps2, ps3, ps4, xbox, xbox360, xboxone, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
     ///
     #[arg(short, long, default_value_t = ALL.to_owned(), verbatim_doc_comment)]
     pub platform: String,
