@@ -4,7 +4,7 @@ mod metacriticresults;
 use args::Args;
 use clap::Parser;
 use colored::Colorize;
-use metacriticresults::{MetacriticResult, TSP};
+use metacriticresults::{MetacriticResult, TSPD};
 use reqwest::blocking::{RequestBuilder, Response};
 use serde_json::to_string;
 use urlencoding::encode;
@@ -97,6 +97,7 @@ fn scrap(
     let title_selector: scraper::Selector;
     let score_selector: scraper::Selector;
     let platform_selector: scraper::Selector;
+    let date_selector: scraper::Selector;
     if name == String::from("coming-soon") {
         items_selector =
             scraper::Selector::parse("table.clamp-list>tbody>tr>td.clamp-summary-wrap").unwrap();
@@ -106,18 +107,20 @@ fn scrap(
         score_selector =
             scraper::Selector::parse("div.clamp-score-wrap>a.metascore_anchor>div.metascore_w")
                 .unwrap();
+        date_selector = scraper::Selector::parse("div.clamp-details>span").unwrap();
     } else {
         items_selector = scraper::Selector::parse("ul.search_results.module>li.result").unwrap();
         title_selector = scraper::Selector::parse("h3.product_title>a").unwrap();
         score_selector = scraper::Selector::parse("div.main_stats>span.metascore_w").unwrap();
         platform_selector = scraper::Selector::parse("div.main_stats>p>span.platform").unwrap();
+        date_selector = scraper::Selector::parse("div.main_stats>p").unwrap();
     }
     let items = document.select(&items_selector).map(|x| x.inner_html());
 
     let mut results: Vec<MetacriticResult> = Vec::new();
 
     items.zip(0..number_of_results).for_each(|(item, number)| {
-        results.push(MetacriticResult::new(None, None, None));
+        results.push(MetacriticResult::new(None, None, None, None));
 
         let current_item = scraper::Html::parse_document(&item);
 
@@ -128,21 +131,38 @@ fn scrap(
                     .to_owned()
                     .replace("<span class=\"title_preifx\">", "")
                     .replace("</span>", ""),
-                TSP::TITLE,
+                TSPD::TITLE,
             );
         });
 
         let scores = current_item.select(&score_selector).map(|x| x.inner_html());
         scores
             .zip(0..)
-            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::SCORE));
+            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSPD::SCORE));
 
         let platforms = current_item
             .select(&platform_selector)
             .map(|x| x.inner_html());
-        platforms
-            .zip(0..)
-            .for_each(|(ite, _num)| results[number].put_data(ite.trim().to_owned(), TSP::PLATFORM));
+        platforms.zip(0..).for_each(|(ite, _num)| {
+            results[number].put_data(ite.trim().to_owned(), TSPD::PLATFORM)
+        });
+
+        let dates = current_item.select(&date_selector).map(|x| x.inner_html());
+        dates.zip(0..).for_each(|(ite, _num)| {
+            if name == String::from("coming-soon") {
+                results[number].put_data(ite.trim().to_owned(), TSPD::DATE);
+            } else {
+                results[number].put_data(
+                    ite.trim()
+                        .to_owned()
+                        .trim_start_matches(|c: char| c != ',')
+                        .replace(",", "")
+                        .trim()
+                        .to_owned(),
+                    TSPD::DATE,
+                );
+            }
+        });
     });
 
     results
@@ -155,33 +175,37 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
         }
         if result.score == "tbd" || result.score == "" {
             println!(
-                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                "Title: {}\nScore: {}\nPlatform: {}\nRelease Date: {}\n\n",
                 format!("{}", result.title).bold(),
                 format!("{}", result.score),
-                result.platform
+                result.platform,
+                result.date
             )
         } else if result.score.parse::<i32>().unwrap() > 74 {
             println!(
-                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                "Title: {}\nScore: {}\nPlatform: {}\nRelease Date: {}\n\n",
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).green(),
-                result.platform
+                result.platform,
+                result.date
             )
         } else if result.score.parse::<i32>().unwrap() > 49
             && result.score.parse::<i32>().unwrap() < 75
         {
             println!(
-                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                "Title: {}\nScore: {}\nPlatform: {}\nRelease Date: {}\n\n",
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).yellow(),
-                result.platform
+                result.platform,
+                result.date
             )
         } else {
             println!(
-                "Title: {}\nScore: {}\nPlatform: {}\n\n",
+                "Title: {}\nScore: {}\nPlatform: {}\nRelease Date: {}\n\n",
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).red(),
-                result.platform
+                result.platform,
+                result.date
             )
         }
     }
