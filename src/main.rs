@@ -85,7 +85,7 @@ fn scrap(document: &scraper::Html, number_of_results: usize) -> Vec<MetacriticRe
     let mut results: Vec<MetacriticResult> = Vec::new();
 
     items.zip(0..number_of_results).for_each(|(item, number)| {
-        results.push(MetacriticResult::new(None, None, None));
+        results.push(MetacriticResult::new());
 
         let current_item = scraper::Html::parse_document(&item);
 
