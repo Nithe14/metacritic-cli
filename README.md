@@ -2,6 +2,8 @@
 
 A very simple HTML scraper for [https://www.metacritic.com/](metacritic) made in Rust. Unfortunately metacritic has no API, so this is the only way to make a CLI app to search scores of games, movies etc.
 
+You can provide title as an argument and get score and basic info about platform and release date or you can provide "coming-soon" to get upcoming game releases. The options should work the same way in both use cases.
+
 ## Prerequisities
 
 - rustc 1.68.0
