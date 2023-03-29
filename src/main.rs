@@ -179,7 +179,7 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
                 format!("{}", result.title).bold(),
                 format!("{}", result.score),
                 result.platform,
-                result.date
+                result.release_date
             )
         } else if result.score.parse::<i32>().unwrap() > 74 {
             println!(
@@ -187,7 +187,7 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).green(),
                 result.platform,
-                result.date
+                result.release_date
             )
         } else if result.score.parse::<i32>().unwrap() > 49
             && result.score.parse::<i32>().unwrap() < 75
@@ -197,7 +197,7 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).yellow(),
                 result.platform,
-                result.date
+                result.release_date
             )
         } else {
             println!(
@@ -205,7 +205,7 @@ fn print_pretty(final_results: Vec<MetacriticResult>) {
                 format!("{}", result.title).bold(),
                 format!("{}", result.score).red(),
                 result.platform,
-                result.date
+                result.release_date
             )
         }
     }

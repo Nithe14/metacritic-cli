@@ -10,7 +10,7 @@ pub struct MetacriticResult {
     pub title: String,
     pub score: String,
     pub platform: String,
-    pub date: String,
+    pub release_date: String,
 }
 impl MetacriticResult {
     pub fn new() -> MetacriticResult {
@@ -18,7 +18,7 @@ impl MetacriticResult {
             title: String::new(),
             score: String::new(),
             platform: String::new(),
-            date: String::new(),
+            release_date: String::new(),
         }
     }
 
@@ -27,7 +27,7 @@ impl MetacriticResult {
             TSPD::TITLE => self.title = input_data,
             TSPD::SCORE => self.score = input_data,
             TSPD::PLATFORM => self.platform = input_data,
-            TSPD::DATE => self.date = input_data,
+            TSPD::DATE => self.release_date = input_data,
         }
     }
 }
