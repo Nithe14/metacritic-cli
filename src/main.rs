@@ -6,7 +6,6 @@ use clap::Parser;
 use colored::Colorize;
 use metacriticresults::{MetacriticResult, TSPD};
 use reqwest::blocking::{RequestBuilder, Response};
-use serde_json::to_string;
 use urlencoding::encode;
 
 #[macro_use]
@@ -14,23 +13,22 @@ extern crate serde_derive;
 
 fn main() {
     let args = Args::parse();
-    let mut_number_of_results: usize;
 
     let url = set_url(&args.name, &args.platform, &args.itype);
 
     let response = make_request(url).unwrap();
     let document = scraper::Html::parse_document(&response);
 
-    if args.single {
-        mut_number_of_results = 1;
+    let number_of_results = if args.single {
+        1
     } else {
-        mut_number_of_results = args.number_of_results;
-    }
+        args.number_of_results
+    };
 
-    let final_results = scrap(&document, mut_number_of_results, args.name); //scraping HTML data
+    let final_results = scrap(&document, number_of_results, args.name); //scraping HTML data
 
     if args.json {
-        println!("{}", to_string(&final_results).unwrap());
+        println!("{}", serde_json::to_string(&final_results).unwrap());
     } else {
         print_pretty(final_results);
     }
