@@ -38,7 +38,7 @@ fn main() {
 
 fn set_url(name: &String, platform: &String, itype: &String) -> String {
     let url: String;
-    if name == &String::from("coming-soon") {
+    if name == "coming-soon" {
         url = format!(
             "https://www.metacritic.com/browse/{}s/release-date/coming-soon/{}/date",
             itype, platform,
@@ -98,7 +98,7 @@ fn scrap(
     let score_selector: scraper::Selector;
     let platform_selector: scraper::Selector;
     let date_selector: scraper::Selector;
-    if name == String::from("coming-soon") {
+    if name == "coming-soon" {
         items_selector =
             scraper::Selector::parse("table.clamp-list>tbody>tr>td.clamp-summary-wrap").unwrap();
         title_selector = scraper::Selector::parse("a.title>h3").unwrap();
@@ -149,7 +149,7 @@ fn scrap(
 
         let dates = current_item.select(&date_selector).map(|x| x.inner_html());
         dates.zip(0..).for_each(|(ite, _num)| {
-            if name == String::from("coming-soon") {
+            if name == "coming-soon" {
                 results[number].put_data(ite.trim().to_owned(), TSPD::DATE);
             } else {
                 results[number].put_data(
