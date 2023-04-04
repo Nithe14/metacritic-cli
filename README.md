@@ -53,40 +53,30 @@ $ metacritic-cli -h
 Usage: metacritic-cli [OPTIONS] <NAME>
 
 Arguments:
-  <NAME>
-          Word to search.
-
-          Example: metacritic-cli witcher\ 3
+  <NAME>  Word to search.
+          You can provide "coming-soon" to get upcoming game releases.
+          Examples:
+          `metacritic-cli "witcher 3"`
+          `metacritic-cli coming-soon -p ps5`
 
 Options:
   -s, --single
           Print only the first object from the result page.
           Works as -n 1.
- -j, --json
+  -j, --json
           Print output as json
-
   -n, --number-of-results <NUMBER_OF_RESULTS>
-          Print only n first objects from the result page (n = 1-10)
-
-          [default: 3]
-
+          Print only n first objects from the result page (n = 1-10) [default: 3]
   -t, --type <ITYPE>
           Specify object type.
           Available types:
-          movie, game, album, tv, person, video, company, story, all
-
-          [default: all]
-
+          movie, game, album, tv, person, video, company, story, all [default: game]
   -p, --platform <PLATFORM>
           Specify platform (only for game type for now).
-          Available options:
-          ps, ps2, ps3, ps4, xbox, xbox-360, xbox-one, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all
-
-          [default: all]
-
+          Available options (ps5 and xbox-series-x is only available for "coming-soon" for now - it's because of metacritic not me, sorry):
+          ps, ps2, ps3, ps4, ps5, xbox, xbox360, xboxone, xbox-series-x, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all [default: all]
   -h, --help
-          Print help information (use `-h` for a summary)
-
+          Print help
   -V, --version
-          Print version information
+          Print version
 ```
