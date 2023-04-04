@@ -73,7 +73,7 @@ Options:
           movie, game, album, tv, person, video, company, story, all [default: game]
   -p, --platform <PLATFORM>
           Specify platform (only for game type for now).
-          Available options (ps5 and xbox-series-x is only available for "coming-soon" for now - it's because of metacritic not me, sorry):
+          Available options (ps5 and xbox-series-x is only available for "coming-soon" for now - it is because of metacritic not me, sorry):
           ps, ps2, ps3, ps4, ps5, xbox, xbox360, xboxone, xbox-series-x, switch, pc, ds, 3ds, ps-vita, psp, wii, wii-u, gameboy-advance, iphone, all [default: all]
   -h, --help
           Print help
