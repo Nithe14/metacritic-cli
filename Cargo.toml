@@ -2,6 +2,12 @@
 name = "metacritic-cli"
 version = "1.2.1"
 edition = "2021"
+authors = ["nithe <imnithe@gmail.com>"]
+license-file = "LICENSE"
+description = "A metacritic cli scraper"
+repository = "https://github.com/Nithe14/metacritic-cli"
+readme = "README.md"
+keywords = ["metacritic", "scraper", "cli", "games"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
